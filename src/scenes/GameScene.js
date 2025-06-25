@@ -90,10 +90,27 @@ export default class GameScene extends Phaser.Scene{
 
     collectStar(player,star){
         star.disableBody(true,true);
-        this.events.emit('star-collected')
+        this.events.emit('star-collected');
+        if (this.stars.countActive(true) === 0) {
+            this.gameOver();
+        }
     }
     updateScore(){
         this.score+=10;
         this.scoreText.setText(`Score:${this.score}`)
     }
+    gameOver() {
+        this.player.setVelocity(0);
+        this.player.anims.stop();
+        this.physics.pause();
+        
+        this.add.text(200, 300, '🎉 Game Over!', {
+            fontSize: '32px',
+            fill: '#ffffff'
+        });
+
+        this.time.delayedCall(3000, () => {
+            this.scene.restart();
+        });
+}
 }
